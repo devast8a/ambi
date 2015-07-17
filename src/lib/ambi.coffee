@@ -83,6 +83,12 @@ ambi = (method, args...) ->
 			# An error was returned so fire the completion callback with the error
 			err = result
 			completionCallback(err)
+		else if result? and typeof(result.then) == 'function'
+			# Handle A+ Promises, A+ only lays out spec for 'then' method
+			result.then (result)->
+				completionCallback(null, result)
+			, (err)->
+				completionCallback(err)
 		else
 			# Everything worked, so fire the completion callback without an error and with the result
 			completionCallback(null, result)
